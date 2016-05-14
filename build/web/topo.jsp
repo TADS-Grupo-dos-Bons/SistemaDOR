@@ -7,7 +7,6 @@
 <nav class="navbar navbar-default navbar-principal navbar-fixed-top">
     <div class="container-fluid">
 
-        
         <div class="navbar-header logo">
             <div class="navbar-header">
                 <a class="navbar-brand" href="#">DOR</a>

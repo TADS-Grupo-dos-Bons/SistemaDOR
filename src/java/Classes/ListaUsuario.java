@@ -59,7 +59,7 @@ public class ListaUsuario extends HttpServlet {
                 sRet += "<tr>\n" +
 "				<td>" + usu.getNome() +"</td>\n" +
 "				<td>" + usu.getUsuario() + "</td>\n" +
-"                               <td><button type=\"button\" class=\"btn btn-warning\" onclick=\"editaUsuario("+ usu.getId()+")\">Editar</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger \" onclick=\"mostramodal2("+ usuario.getId()+");\">Excluir</button></td>\n"+                        
+"                               <td><button type=\"button\" class=\"btn btn-warning\" onclick=\"carregaeditaUsuario("+ usu.getId()+")\">Editar</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger \" onclick=\"mostramodal2("+ usuario.getId()+");\">Excluir</button></td>\n"+                        
 "			</tr>";
             }
 

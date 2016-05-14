@@ -69,7 +69,7 @@ public class UsuarioDAO {
 
     }
 
-    public void update(Usuario user,int id) {
+    public void update(Usuario user) {
         com.mysql.jdbc.Connection con = null;
         PreparedStatement stmt = null;
         try {

@@ -7,135 +7,162 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>DOR</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
-    <link type="text/css" rel="stylesheet" href="css/tudo.css">
-    <link type="text/css" rel="stylesheet" href="css/bootstrap-switch.css">
-    <script src="js/jquery-2.2.1.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/bootstrap-switch.js"></script>
-    <script type="text/javascript">
-        function mostramodal(){
-            $('#myModal2').modal('show');
-        }
-        function mostramodal1(){
-            $('#myModal1').modal('show');
-        }
+    <head>
+        <title>DOR</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link type="text/css" rel="stylesheet" href="css/bootstrap.css">
+        <link type="text/css" rel="stylesheet" href="css/tudo.css">
+        <link type="text/css" rel="stylesheet" href="css/bootstrap-switch.css">
+        <script src="js/jquery-2.2.1.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/bootstrap-switch.js"></script>
+        <script type="text/javascript">
+            function mostramodal() {
+                $('#myModal2').modal('show');
+            }
+            function mostramodal1() {
+                $('#myModal1').modal('show');
+            }
 
 
-        $( document ).ready(function() {
-            getLista();
+            $(document).ready(function () {
+                getLista();
 
-            $(".cadusuario").addClass('active');
+                $(".cadusuario").addClass('active');
 
 
-            $('#myTabs a').click(function (e) {
-              e.preventDefault()
-              $(this).tab('show')
+                $('#myTabs a').click(function (e) {
+                    e.preventDefault()
+                    $(this).tab('show')
+                });
+
+
+
             });
-            
-           
-        
-        });
+
+            //funcao que mostra os usuarios cadastrados na tela.
+            function getLista() {
+                $.ajax({
+                    type: "post",
+                    url: "ListaUsuario", //this is my servlet
+                    data: "",
+                    success: function (msg) {
+                        $('#tbConteudoUsuario').html(msg);
+                    }
+                });
+            }
+
+            //Funcao que rcarrega o modal de cadastro de usuario.
+            function carregacadastrarUsuario() {
+                mostramodal();
+                $("#invisivel").val('0');
                 
 
-        function cadastrarUsuario(){
-            $.ajax({
-                type: "post",
-                url: "ProcessaCadUsuario", //this is my servlet
-                data: "nome="+$("#nome").val()+"&user="+$('#user').val()+
-                      "&senha="+$('#senha').val(),
-                success: function(msg){
-                    alert('Conta cadastrada com sucesso.');
-                    location.reload(true);
+            }
+            //Faz o insert do usuario;
+            function cadastrarUsuario() {
+                $.ajax({
+                    type: "post",
+                    url: "ProcessaCadUsuario", //this is my servlet
+                    data: "",
+                    data: "nome=" + $("#nome").val() + "&user=" + $('#user').val() +
+                            "&senha=" + $('#senha').val(),
+                            success: function (msg) {
+                                alert('Conta cadastrada com sucesso.');
+                                location.reload(true);
+                            }
+                });
+            }
+
+            //Funcao que joga os dados do usuario selecionado no modal.
+            function carregaeditaUsuario(id) {
+                $.ajax({
+                    type: "post",
+                    url: "EditaUsuario", //this is my servlet
+                    data: "idUsuario=" + id,
+                    success: function (data) {
+                        var resp = data.split(",");
+                        $("#invisivel").val(resp[0]);
+                        $("#nome").val(resp[1]);
+                        $("#user").val(resp[2]);
+                        $("#senha").val(resp[3]);
+
+                        mostramodal();
+
+                    }
+                });
+            }
+
+            function editaUsuario() {
+                $.ajax({
+                    type: "post",
+                    url: "ProcessaEditaUsuario", //this is my servlet
+                    data: "nome=" + $("#nome").val() + "&user=" + $('#user').val() +
+                            "&senha=" + $('#senha').val() + "&id="+ $("#invisivel").val(),
+                            success: function (msg) {
+                                alert('Dados editados com sucesso.');
+                                location.reload(true);
+                            }
+                });
+            }
+
+            //Funcao que trata a operação a ser feita (insert/update).
+            function salvaUsuario() {
+                
+                if ($("#invisivel").val() == '0') {
+                    cadastrarUsuario();
+                } else {
+                    editaUsuario();
                 }
-            });
-        }
-        
-        
-        function getLista(){
-            
-            $.ajax({
-                type: "post",
-                url: "ListaUsuario", //this is my servlet
-                data: "",
-                success: function(msg){
-                    $('#tbConteudoUsuario').html(msg);
-                }
-            });
-        }    
-        
-        function editaUsuario(id){
-            $.ajax({
-                type:"post",
-                url: "EditaUsuario", //this is my servlet
-                data: "idUsuario="+id,
-                success: function(data){
-                    var resp = data.split(",");
-                    $("#invisivel").val(resp[0]);
-                    $("#nome").val(resp[1]);
-                    $("#user").val(resp[2]);
-                    $("#senha").val(resp[3]);
-
-                    mostramodal();
-                    
-                    
-                }
-            });
-        }
-        
-
-    </script>
-</head>
-<body>
+            }
 
 
-    <jsp:include page="topo.jsp"/>
+        </script>
+    </head>
+    <body>
 
-    <div class="container" >
-    <br>
-        <div class="panel panel-default conta">
-            <div class="panel-heading ">
-                <h4 class="panel-title">
-                    <a class="accordion-toggle " data-toggle="collapse" data-parent="#accordion">
-                        
-                    </a>
-                    <button type="button" onclick="mostramodal()" class="btn btn-primary btn-novo">Novo</button>
-                </h4>
-            </div>
-            <div class="panel-body">
+        <jsp:include page="topo.jsp"/>
 
-                <input class="form-control" type="text" name="busca_nome" placeholder="Busca por nome / Nome">
-                <br>    
-                <table class="table table-bordered table-striped" aria-describedby="dataTable1_info">
-                    <thead>
-                        <tr>
-                            <th>
-                                Nome
-                            </th>                        
-                            <th>
-                                Usuario
-                            <th>
-                                Opções
-                            </th>
-                        </tr>                 
-                    </thead>
-                            
-                    	<tbody class="lvUsuarioTbody" role="alert" aria-live="polite" aria-relevant="all" id="tbConteudoUsuario">
+        <div class="container" >
+            <br>
+            <div class="panel panel-default conta">
+                <div class="panel-heading ">
+                    <h4 class="panel-title">
+                        <a class="accordion-toggle " data-toggle="collapse" data-parent="#accordion"></a>
+                        <button type="button" onclick="carregacadastrarUsuario()" class="btn btn-primary btn-novo">Novo</button>
+                    </h4>
+                </div>
+                <div class="panel-body">
+
+                    <input class="form-control" type="text" name="busca_nome" placeholder="Busca por nome / Nome">
+                    <br>    
+                    <table class="table table-bordered table-striped" aria-describedby="dataTable1_info">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Nome
+                                </th>                        
+                                <th>
+                                    Usuario
+                                <th>
+                                    Opções
+                                </th>
+                            </tr>                 
+                        </thead>
+
+                        <tbody class="lvUsuarioTbody" role="alert" aria-live="polite" aria-relevant="all" id="tbConteudoUsuario">
 
                         </tbody>
-                </table>
-                            
-                  
+                    </table>
+
+
+                </div>  
             </div>  
-        </div>  
 
-    </div>
+        </div>
 
-</body>
+    </body>
 </html>
 
 
@@ -149,7 +176,7 @@
                 <h4 class="modal-title">Novo</h4>
             </div>
             <div class="modal-body">
-                
+
 
                 <div class='row'>
                     <div class='col-md-8 col-md-offset-3'>
@@ -172,7 +199,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" onclick='cadastrarUsuario();' class="btn btn-primary">Salvar</button>
+                <button type="button" onclick='salvaUsuario();' class="btn btn-primary">Salvar</button>
                 <input type="text" style="display:None;" id="invisivel">
             </div>
         </div>

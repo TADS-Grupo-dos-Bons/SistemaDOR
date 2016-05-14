@@ -41,22 +41,20 @@ public class ProcessaCadUsuario extends HttpServlet {
             Logger.getLogger(ProcessaCadUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
         try (PrintWriter out = response.getWriter()) {
-            HttpSession sessionUsu = request.getSession();
-            Usuario usuario = (Usuario) sessionUsu.getAttribute("Usuario");
-        
+
             String nome = request.getParameter("nome");
-            String usu = request.getParameter("usuario");
+            String usu = request.getParameter("user");
             String senha = request.getParameter("senha");
             
-            Usuario user = new Usuario();
+            Usuario usuario = new Usuario();
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             
-            user.setNome(nome);
-            user.setUsuario(usu);
-            user.setSenha(senha);
+            usuario.setNome(nome);
+            usuario.setUsuario(usu);
+            usuario.setSenha(senha);
 
             
-            usuarioDAO.insert(user);
+            usuarioDAO.insert(usuario);
         }
     }
 
