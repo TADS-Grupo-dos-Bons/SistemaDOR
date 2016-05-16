@@ -25,6 +25,7 @@ public class UsuarioDAO {
     private String stmtInsert = "insert into usuario (nome,usuario,senha) values(?,?,?);";
     private String stmtCheckLogin = "select * from usuario where usuario =? and senha=?;";
     private String stmtSelectById = "select * from usuario where id =?";
+    private String stmtDelete = "delete from usuario where id = ?";
 
     public List<Usuario> getLista() throws SQLException {
         com.mysql.jdbc.Connection con = null;
@@ -73,13 +74,39 @@ public class UsuarioDAO {
         com.mysql.jdbc.Connection con = null;
         PreparedStatement stmt = null;
         try {
-            
+
             con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
             stmt = con.prepareStatement(stmtUpdate);
-            stmt.setString(1, user.getNome());  
+            stmt.setString(1, user.getNome());
             stmt.setString(2, user.getUsuario());
             stmt.setString(3, user.getSenha());
             stmt.setInt(4, user.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
+            };
+            try {
+                con.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
+            };
+        }
+    }
+
+    public void exclui(Usuario user) {
+        com.mysql.jdbc.Connection con = null;
+        PreparedStatement stmt = null;
+        try {
+
+            con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
+            stmt = con.prepareStatement(stmtDelete);
+            stmt.setInt(1, user.getId());
             stmt.executeUpdate();
 
         } catch (SQLException e) {

@@ -7,10 +7,6 @@ package Classes;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.System.out;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -18,14 +14,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author allex
  */
-@WebServlet(name = "ListaUsuario", urlPatterns = {"/ListaUsuario"})
-public class ListaUsuario extends HttpServlet {
+@WebServlet(name = "ProcessaEditaUsuario", urlPatterns = {"/ProcessaEditaUsuario"})
+public class ProcessaEditaUsuario extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,34 +33,31 @@ public class ListaUsuario extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            
-       
-        
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            HttpSession sessionUsu = request.getSession();
-            Usuario usuario = (Usuario) sessionUsu.getAttribute("Usuario");
 
-            List<Usuario> lstusuario = new ArrayList();
+            String nome = request.getParameter("nome");
+            String user = request.getParameter("user");
+            String senha = request.getParameter("senha");
+            int id = Integer.parseInt((request.getParameter("id")));
+            
             UsuarioDAO usuarioDAO = new UsuarioDAO();
+            Usuario usuario = new Usuario();
+            
             try {
-                lstusuario = usuarioDAO.getLista();
-            } catch (SQLException ex) {
-                Logger.getLogger(ListaUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                usuario = usuarioDAO.getById(id);
+                usuario.setId(id);
+                usuario.setNome(nome);
+                usuario.setUsuario(user);
+                usuario.setSenha(senha);
+                
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ProcessaEditaUsuario.class.getName()).log(Level.SEVERE, null, ex);
             }
-            String sRet = "";
-            for (Usuario usu : lstusuario) {
-                sRet += "<tr>\n" +
-"				<td>" + usu.getNome() +"</td>\n" +
-"				<td>" + usu.getUsuario() + "</td>\n" +
-"                               <td><button type=\"button\" class=\"btn btn-warning\" onclick=\"carregaeditaUsuario("+ usu.getId()+")\">Editar</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger \" onclick=\"excluir("+usu.getId()+");\">Excluir</button></td>\n"+
-"			</tr>";
-            }
+            
+            usuarioDAO.update(usuario);
 
-            out.println(sRet);
-            
-            
+
         }
     }
 

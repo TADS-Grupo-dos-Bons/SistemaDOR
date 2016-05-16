@@ -56,8 +56,11 @@
             //Funcao que rcarrega o modal de cadastro de usuario.
             function carregacadastrarUsuario() {
                 mostramodal();
+                $("#nome").val('');
+                $("#user").val('');
+                $("#senha").val('');
                 $("#invisivel").val('0');
-                
+
 
             }
             //Faz o insert do usuario;
@@ -99,22 +102,35 @@
                     type: "post",
                     url: "ProcessaEditaUsuario", //this is my servlet
                     data: "nome=" + $("#nome").val() + "&user=" + $('#user').val() +
-                            "&senha=" + $('#senha').val() + "&id="+ $("#invisivel").val(),
-                            success: function (msg) {
-                                alert('Dados editados com sucesso.');
-                                location.reload(true);
-                            }
+                            "&senha=" + $('#senha').val() + "&id=" + $("#invisivel").val(),
+                    success: function (msg) {
+                        alert('Dados editados com sucesso.');
+                        location.reload(true);
+                    }
                 });
             }
 
             //Funcao que trata a operação a ser feita (insert/update).
             function salvaUsuario() {
-                
                 if ($("#invisivel").val() == '0') {
                     cadastrarUsuario();
                 } else {
                     editaUsuario();
                 }
+            }
+
+            //Funcao que exclui o usuario
+
+            function excluir(id) {
+                $.ajax({
+                    type: "post",
+                    url: "ProcessaExcluiUsuario", //this is my servlet
+                    data: "id=" +id,
+                    success: function (msg) {
+                        alert('Usuario excluido com sucesso.');
+                        location.reload(true);
+                    }
+                });
             }
 
 
@@ -190,7 +206,7 @@
                             <input id="user" class="user" type="text" name="data"/>
                         </div><br>
                         <div class="cel1">
-                            <label for="cod_analise">Senha</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="cod_analise">Senha</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <input id="senha" class="senha" type="password" name="data"/>
                         </div><br>
                     </div>
