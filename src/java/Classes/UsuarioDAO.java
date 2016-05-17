@@ -27,15 +27,25 @@ public class UsuarioDAO {
     private String stmtSelectById = "select * from usuario where id =?";
     private String stmtDelete = "delete from usuario where id = ?";
 
-    public List<Usuario> getLista() throws SQLException {
+    public List<Usuario> getLista(Usuario user, String pesquisa) throws SQLException {
         com.mysql.jdbc.Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
-            stmt = con.prepareStatement(stmtSelect);
+            if (!pesquisa.trim().equals("")) {
+
+                stmtSelect = stmtSelect + " where nome LIKE ?";
+                stmt = con.prepareStatement(stmtSelect);
+                stmt.setString(1, "%"+pesquisa+"%");
+
+            }else{
+
+                stmt = con.prepareStatement(stmtSelect);
+            }
             rs = stmt.executeQuery();
             List<Usuario> lstusuario = new ArrayList();
+           
             while (rs.next()) {
                 // criando o objeto Usuario
                 Usuario usuario = new Usuario();
@@ -46,8 +56,8 @@ public class UsuarioDAO {
                 // adicionando o objeto à lista
                 lstusuario.add(usuario);
             }
-
             return lstusuario;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -232,6 +242,10 @@ public class UsuarioDAO {
                 System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
             };
         }
+    }
+
+    List<Usuario> getLista(String string, String string0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

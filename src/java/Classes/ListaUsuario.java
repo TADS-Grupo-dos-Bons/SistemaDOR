@@ -38,9 +38,7 @@ public class ListaUsuario extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            
-       
-        
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
@@ -49,23 +47,33 @@ public class ListaUsuario extends HttpServlet {
 
             List<Usuario> lstusuario = new ArrayList();
             UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+            String pesquisa = request.getParameter("pesquisa");
+//            if (pesquisa.trim().equals("")){
+//                try {
+//                    lstusuario = usuarioDAO.getLista(usuario,pesquisa);
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(ListaUsuario.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }else{
             try {
-                lstusuario = usuarioDAO.getLista();
+                lstusuario = usuarioDAO.getLista(usuario, pesquisa);
             } catch (SQLException ex) {
                 Logger.getLogger(ListaUsuario.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+//            }
             String sRet = "";
             for (Usuario usu : lstusuario) {
-                sRet += "<tr>\n" +
-"				<td>" + usu.getNome() +"</td>\n" +
-"				<td>" + usu.getUsuario() + "</td>\n" +
-"                               <td><button type=\"button\" class=\"btn btn-warning\" onclick=\"carregaeditaUsuario("+ usu.getId()+")\">Editar</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger \" onclick=\"excluir("+usu.getId()+");\">Excluir</button></td>\n"+
-"			</tr>";
+                sRet += "<tr>\n"
+                        + "				<td>" + usu.getNome() + "</td>\n"
+                        + "				<td>" + usu.getUsuario() + "</td>\n"
+                        + "                               <td><button type=\"button\" class=\"btn btn-warning\" onclick=\"carregaeditaUsuario(" + usu.getId() + ")\">Editar</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger \" onclick=\"excluir(" + usu.getId() + ");\">Excluir</button></td>\n"
+                        + "			</tr>";
             }
 
             out.println(sRet);
-            
-            
+
         }
     }
 

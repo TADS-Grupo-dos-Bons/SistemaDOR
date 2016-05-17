@@ -38,7 +38,7 @@
             <form action="ProcessaLogin" method="post">
                 <div class="form-group">
                     <div class="input-group">
-                        <span class="input-group-addon"><i>Usuario</i></span><input class="form-control" type="text" name="usuario" placeholder="999999999-99">
+                        <span class="input-group-addon"><i>Usuario</i></span><input class="form-control" type="text" name="usuario" placeholder="Usuario">
                     </div>
                 </div>
                 <div class="form-group">

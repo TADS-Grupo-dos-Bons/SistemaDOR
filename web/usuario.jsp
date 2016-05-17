@@ -46,7 +46,7 @@
                 $.ajax({
                     type: "post",
                     url: "ListaUsuario", //this is my servlet
-                    data: "",
+                    data: "pesquisa="+"",
                     success: function (msg) {
                         $('#tbConteudoUsuario').html(msg);
                     }
@@ -125,12 +125,25 @@
                 $.ajax({
                     type: "post",
                     url: "ProcessaExcluiUsuario", //this is my servlet
-                    data: "id=" +id,
+                    data: "id=" + id,
                     success: function (msg) {
                         alert('Usuario excluido com sucesso.');
                         location.reload(true);
                     }
                 });
+            }
+
+            //Função que pesquisa usuário por nome.
+            function pesquisa() {
+                $.ajax({
+                    type: "post",
+                    url: "ListaUsuario", //this is my servlet
+                    data: "pesquisa=" + $('#pesquisa').val(),
+                    success: function (msg) {
+                        $('#tbConteudoUsuario').html(msg);
+                    }
+                });
+         
             }
 
 
@@ -151,7 +164,7 @@
                 </div>
                 <div class="panel-body">
 
-                    <input class="form-control" type="text" name="busca_nome" placeholder="Busca por nome / Nome">
+                    <input class="form-control" type="text" name="busca_nome" id="pesquisa" onkeyup="pesquisa();"  placeholder="Busca por Nome">
                     <br>    
                     <table class="table table-bordered table-striped" aria-describedby="dataTable1_info">
                         <thead>
