@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +26,62 @@ public class ClienteDAO {
     private String stmtCheckLogin = "select * from cliente where cpf =? and senha=?;";
     private String stmtGetEndereco = "select * from endereco where idcliente=?";
     private String stmtSelectById = "select * from cliente where id =?";
+    private String stmtSelect = "select * from cliente";
+    
+    public List<Cliente> getLista(String pesquisa) throws SQLException {
+        com.mysql.jdbc.Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
+            if (!pesquisa.trim().equals("")) {
+
+                stmtSelect = stmtSelect + " where nome LIKE ? or cpf LIKE ? ";
+                stmt = con.prepareStatement(stmtSelect);
+                stmt.setString(1, "%"+pesquisa+"%");
+
+            }else{
+
+                stmt = con.prepareStatement(stmtSelect);
+            }
+            rs = stmt.executeQuery();
+            List<Cliente> lstcliente = new ArrayList();
+           
+            while (rs.next()) {
+                // criando o objeto Usuario
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setRg(rs.getString("rg"));
+                cliente.setCpf(rs.getString("cpf"));
+                cliente.setStatus(rs.getString("status"));
+
+                // adicionando o objeto à lista
+                lstcliente.add(cliente);
+            }
+            return lstcliente;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar result set. Ex=" + ex.getMessage());
+            };
+            try {
+                stmt.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
+            };
+            try {
+                con.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
+            };
+        }
+
+    }
     
     public void insert(Cliente cliente) {
         Connection con=null;
