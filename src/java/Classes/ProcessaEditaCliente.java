@@ -7,10 +7,7 @@ package Classes;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.System.out;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -18,14 +15,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author allex
  */
-@WebServlet(name = "ListaUsuario", urlPatterns = {"/ListaUsuario"})
-public class ListaUsuario extends HttpServlet {
+@WebServlet(name = "ProcessaEditaCliente", urlPatterns = {"/ProcessaEditaCliente"})
+public class ProcessaEditaCliente extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,42 +33,48 @@ public class ListaUsuario extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+            throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            HttpSession sessionUsu = request.getSession();
-            Usuario usuario = (Usuario) sessionUsu.getAttribute("Usuario");
 
-            List<Usuario> lstusuario = new ArrayList();
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            String nome = request.getParameter("nome");
+            String rg = request.getParameter("rg");
+            String cpf = request.getParameter("cpf");
+            int id = Integer.parseInt((request.getParameter("id")));
+            String status = null;
 
-            String pesquisa = request.getParameter("pesquisa");
-//            if (pesquisa.trim().equals("")){
-//                try {
-//                    lstusuario = usuarioDAO.getLista(usuario,pesquisa);
-//                } catch (SQLException ex) {
-//                    Logger.getLogger(ListaUsuario.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }else{
+            if (request.getParameter("status").equals("1")) {
+                status = "A";
+            } else {
+                status = "I";
+            }
+
+            ClienteDAO clienteDAO = new ClienteDAO();
+            Cliente cliente = new Cliente();
+            HistoricoDAO historicoDAO = new HistoricoDAO();
+            Historico historico = new Historico();
+            historico = historicoDAO.getById(request.getParameter("id"));
+            
             try {
-                lstusuario = usuarioDAO.getLista(usuario, pesquisa);
-            } catch (SQLException ex) {
-                Logger.getLogger(ListaUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                cliente = clienteDAO.getById(id);
+                cliente.setId(id);
+                cliente.setNome(nome);
+                cliente.setRg(rg);
+                cliente.setCpf(cpf);
+                cliente.setStatus(status);
+
+                if (status.equals("I") && historico.getDtFim() == null) {
+                    java.util.Date utilDate = new java.util.Date();
+                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                    historico.setDtFim(sqlDate);                    
+                }
+
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ProcessaEditaCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-//            }
-            String sRet = "";
-            for (Usuario usu : lstusuario) {
-                sRet += "<tr>\n"
-                        + "				<td>" + usu.getNome() + "</td>\n"
-                        + "				<td>" + usu.getUsuario() + "</td>\n"
-                        + "                               <td><button type=\"button\" class=\"btn btn-warning\" onclick=\"carregaeditaUsuario(" + usu.getId() + ")\">Editar</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger \" onclick=\"excluir(" + usu.getId() + ");\">Excluir</button></td>\n"
-                        + "			</tr>";
-            }
-
-            out.println(sRet);
+            clienteDAO.update(cliente);
+            historicoDAO.update(historico);
 
         }
     }
@@ -89,7 +91,11 @@ public class ListaUsuario extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProcessaEditaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -103,7 +109,11 @@ public class ListaUsuario extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProcessaEditaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

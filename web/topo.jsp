@@ -12,10 +12,8 @@
                 <a class="navbar-brand" href="#">DOR</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="principal" ><a  href="principal.jsp" >Negativados</a></li>
-                <li class="cadusuario"> <a href="usuario.jsp">Cadastro de Usuarios</a></li>
-                <li class="cadcliente"><a  href="cliente.jsp">Cadastro de Cliente</a></li> 
-                <li><a href="#">Page 3</a></li> 
+                <li class="cadcliente"><a  href="cliente.jsp">Lista de restrição</a></li> 
+                <li class="cadusuario"> <a href="usuario.jsp">Cadastro de usuários</a></li>
             </ul>
         </div>
 

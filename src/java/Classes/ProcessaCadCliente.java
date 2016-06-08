@@ -7,18 +7,24 @@ package Classes;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Junior
+ * @author allex
  */
-@WebServlet(name = "ProcessaErro", urlPatterns = {"/ProcessaErro"})
-public class ProcessaErro extends HttpServlet {
+@WebServlet(name = "ProcessaCadCliente", urlPatterns = {"/ProcessaCadCliente"})
+public class ProcessaCadCliente extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,18 +38,47 @@ public class ProcessaErro extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String msg = (String) request.getAttribute("ERRO");
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ProcessaCadCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ProcessaErro</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println(msg);
-            out.println("</body>");
-            out.println("</html>");
+
+            Usuario usuario = new Usuario();
+            HttpSession session = request.getSession();
+            usuario = (Usuario) session.getAttribute("Usuario");
+
+            String nome = request.getParameter("nome");
+            String rg = request.getParameter("rg");
+            String cpf = request.getParameter("cpf");
+            String status = "A";
+            String empresa = request.getParameter("empresa");
+
+            Cliente cliente = new Cliente();
+            ClienteDAO clienteDAO = new ClienteDAO();
+
+            cliente.setNome(nome);
+            cliente.setRg(rg);
+            cliente.setCpf(cpf);
+            cliente.setStatus(status);
+
+            clienteDAO.insert(cliente);
+
+            Historico historico = new Historico();
+            HistoricoDAO historicoDAO = new HistoricoDAO();
+
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+            historico.setDtInicio(sqlDate);
+            historico.setDtFim(null);
+            historico.setId_cliente(cliente.getId());
+            historico.setId_usuario(usuario.getId());
+            historico.setId_empresa_usuario(usuario.getId_empresa());
+
+            historicoDAO.insert(historico);
+
         }
     }
 

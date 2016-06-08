@@ -45,6 +45,9 @@ public class ProcessaCadUsuario extends HttpServlet {
             String nome = request.getParameter("nome");
             String usu = request.getParameter("user");
             String senha = request.getParameter("senha");
+            String empresa = request.getParameter("empresa");
+            
+            int empresaInt = Integer.parseInt(empresa);
             
             Usuario usuario = new Usuario();
             UsuarioDAO usuarioDAO = new UsuarioDAO();
@@ -52,6 +55,7 @@ public class ProcessaCadUsuario extends HttpServlet {
             usuario.setNome(nome);
             usuario.setUsuario(usu);
             usuario.setSenha(senha);
+            usuario.setId_empresa(empresaInt);
 
             
             usuarioDAO.insert(usuario);

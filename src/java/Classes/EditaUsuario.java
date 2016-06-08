@@ -52,8 +52,11 @@ public class EditaUsuario extends HttpServlet {
                 String nome = usuario.getNome();
                 String user = usuario.getUsuario();
                 String senha = usuario.getSenha();
+                int empresa = usuario.getId_empresa();
                 
-                String ret = id+","+nome+","+user+","+senha;
+                String empresaString = String.valueOf(empresa);
+                
+                String ret = id+","+nome+","+user+","+senha+","+empresaString;
                 
                 out.println(ret);
                 

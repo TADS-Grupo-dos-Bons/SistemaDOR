@@ -40,6 +40,7 @@ public class ProcessaEditaUsuario extends HttpServlet {
             String user = request.getParameter("user");
             String senha = request.getParameter("senha");
             int id = Integer.parseInt((request.getParameter("id")));
+            int empresa = Integer.parseInt((request.getParameter("empresa")));
             
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             Usuario usuario = new Usuario();
@@ -50,6 +51,7 @@ public class ProcessaEditaUsuario extends HttpServlet {
                 usuario.setNome(nome);
                 usuario.setUsuario(user);
                 usuario.setSenha(senha);
+                usuario.setId_empresa(empresa);
                 
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ProcessaEditaUsuario.class.getName()).log(Level.SEVERE, null, ex);

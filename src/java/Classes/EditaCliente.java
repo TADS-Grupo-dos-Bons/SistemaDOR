@@ -14,13 +14,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author allex
  */
-@WebServlet(name = "ProcessaExcluiUsuario", urlPatterns = {"/ProcessaExcluiUsuario"})
-public class ProcessaExcluiUsuario extends HttpServlet {
+@WebServlet(name = "EditaCliente", urlPatterns = {"/EditaCliente"})
+public class EditaCliente extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,26 +35,34 @@ public class ProcessaExcluiUsuario extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
 
-            int id = Integer.parseInt((request.getParameter("id")));
-            
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
-            Usuario usuario = new Usuario();
-            
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ProcessaCadCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try (PrintWriter out = response.getWriter()) {
+            int id = Integer.parseInt((request.getParameter("idCliente")));
+
+            Cliente cliente = new Cliente();
+            ClienteDAO clienteDAO = new ClienteDAO();
+
             try {
-                usuario = usuarioDAO.getById(id);
-                usuario.setId(id);
-               
+                cliente = clienteDAO.getById(id);
+                String nome = cliente.getNome();
+                String rg = cliente.getRg();
+                String cpf = cliente.getCpf();
+                String status = cliente.getStatus();
+                
+                String ret = id+","+nome+","+rg+","+cpf+","+status;
+                
+                out.println(ret);
                 
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ProcessaEditaUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EditaCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            usuarioDAO.exclui(usuario);
-
-
         }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

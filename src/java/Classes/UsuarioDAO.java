@@ -20,9 +20,9 @@ import java.util.List;
  */
 public class UsuarioDAO {
 
-    private String stmtUpdate = "update usuario set nome=?, usuario=?, senha=? where id=?";
+    private String stmtUpdate = "update usuario set nome=?, usuario=?, senha=?, id_empresa=? where id=?";
     private String stmtSelect = "select * from usuario";
-    private String stmtInsert = "insert into usuario (nome,usuario,senha) values(?,?,?);";
+    private String stmtInsert = "insert into usuario (nome,usuario,senha,id_empresa) values(?,?,?,?);";
     private String stmtCheckLogin = "select * from usuario where usuario =? and senha=?;";
     private String stmtSelectById = "select * from usuario where id =?";
     private String stmtDelete = "delete from usuario where id = ?";
@@ -89,8 +89,9 @@ public class UsuarioDAO {
             stmt = con.prepareStatement(stmtUpdate);
             stmt.setString(1, user.getNome());
             stmt.setString(2, user.getUsuario());
-            stmt.setString(3, user.getSenha());
-            stmt.setInt(4, user.getId());
+            stmt.setString(3, user.getSenha());            
+            stmt.setInt(4, user.getId_empresa());
+            stmt.setInt(5, user.getId());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -146,6 +147,7 @@ public class UsuarioDAO {
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getUsuario());
             stmt.setString(3, usuario.getSenha());
+            stmt.setInt(4, usuario.getId_empresa());
             stmt.execute();
             //Seta o id do sistema
             ResultSet rs = stmt.getGeneratedKeys();
@@ -224,6 +226,7 @@ public class UsuarioDAO {
                 usuario.setNome(rs.getString("nome"));
                 usuario.setUsuario(rs.getString("usuario"));
                 usuario.setSenha(rs.getString("senha"));
+                usuario.setId_empresa(rs.getInt("id_empresa"));
 
             }
 

@@ -62,16 +62,18 @@ public class ListaCliente extends HttpServlet {
             }
 
 //            }
-            /*String sRet = "";
-            for (Usuario usu : lstcliente) {
+            String sRet = "";
+            for (Cliente cli : lstcliente) {
                 sRet += "<tr>\n"
-                        + "				<td>" + usu.getNome() + "</td>\n"
-                        + "				<td>" + usu.getUsuario() + "</td>\n"
-                        + "                               <td><button type=\"button\" class=\"btn btn-warning\" onclick=\"carregaeditaUsuario(" + usu.getId() + ")\">Editar</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-danger \" onclick=\"excluir(" + usu.getId() + ");\">Excluir</button></td>\n"
+                        + "				<td>" + cli.getNome() + "</td>\n"
+                        + "				<td>" + cli.getRg() + "</td>\n"
+                        + "				<td>" + cli.getCpf() + "</td>\n"
+                        + "				<td>" + cli.getStatus() + "</td>\n"
+                        + "                               <td><button type=\"button\" class=\"btn btn-warning \" onclick=\"carregaRelatorio(" + cli.getId() + ");\">Relatório</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-success\" onclick=\"carregaeditaCliente(" + cli.getId() + ")\">Editar</button></td>\n"
                         + "			</tr>";
             }
 
-            out.println(sRet);*/
+            out.println(sRet);
 
         }
     }

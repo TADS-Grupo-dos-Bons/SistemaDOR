@@ -52,7 +52,7 @@ public class ProcessaLogin extends HttpServlet {
                 if(usuario.getId() != 0){
                     HttpSession session = request.getSession();
                     session.setAttribute("Usuario", usuario);
-                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/principal.jsp");
+                    RequestDispatcher rd = getServletContext().getRequestDispatcher("/cliente.jsp");
                     rd.forward(request, response);
                 }else{
                     request.setAttribute("ERRO", "Usuario ou senhas incorretos.");

@@ -14,6 +14,7 @@ public class Usuario {
     private String nome;
     private String usuario;
     private String senha;
+    private int id_empresa;
 
     public int getId() {
         return id;
@@ -47,18 +48,12 @@ public class Usuario {
         this.senha = senha;
     }
 
-    Integer getId(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int getId_empresa() {
+        return id_empresa;
     }
 
-    void getNome(String nome) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setId_empresa(int id_empresa) {
+        this.id_empresa = id_empresa;
     }
-
-    void getUsuario(String user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
     
 }

@@ -22,11 +22,13 @@ import java.util.logging.Logger;
  * @author allex
  */
 public class ClienteDAO {
-    private String stmtInsert = "insert into cliente(nome,rg,cpf,status,senha) values(?,?,?,?,?);";
+    private String stmtInsert = "insert into cliente(nome,rg,cpf,st_cliente) values(?,?,?,?);";
     private String stmtCheckLogin = "select * from cliente where cpf =? and senha=?;";
     private String stmtGetEndereco = "select * from endereco where idcliente=?";
     private String stmtSelectById = "select * from cliente where id =?";
     private String stmtSelect = "select * from cliente";
+    private String stmtUpdate = "update cliente set nome=?, rg=?, cpf=?, st_cliente=? where id=?";
+    private String stmtDelete = "delete from cliente where id = ?";
     
     public List<Cliente> getLista(String pesquisa) throws SQLException {
         com.mysql.jdbc.Connection con = null;
@@ -36,9 +38,10 @@ public class ClienteDAO {
             con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
             if (!pesquisa.trim().equals("")) {
 
-                stmtSelect = stmtSelect + " where nome LIKE ? or cpf LIKE ? ";
+                stmtSelect = stmtSelect + " where nome LIKE ? or cpf LIKE ?";
                 stmt = con.prepareStatement(stmtSelect);
                 stmt.setString(1, "%"+pesquisa+"%");
+                stmt.setString(2, "%"+pesquisa+"%");
 
             }else{
 
@@ -54,7 +57,7 @@ public class ClienteDAO {
                 cliente.setNome(rs.getString("nome"));
                 cliente.setRg(rs.getString("rg"));
                 cliente.setCpf(rs.getString("cpf"));
-                cliente.setStatus(rs.getString("status"));
+                cliente.setStatus(rs.getString("st_cliente"));
 
                 // adicionando o objeto à lista
                 lstcliente.add(cliente);
@@ -95,7 +98,6 @@ public class ClienteDAO {
             stmt.setString(2, cliente.getRg()); 
             stmt.setString(3, cliente.getCpf()); 
             stmt.setString(4, cliente.getStatus());
-            stmt.setString(5, cliente.getSenha());
             stmt.execute();
             //Seta o id do sistema
             ResultSet rs = stmt.getGeneratedKeys();
@@ -128,8 +130,7 @@ public class ClienteDAO {
                 cliente.setNome(rs.getString("nome"));
                 cliente.setRg(rs.getString("rg"));
                 cliente.setCpf(rs.getString("cpf"));
-                cliente.setStatus(rs.getString("status"));
-                cliente.setSenha(rs.getString("senha"));
+                cliente.setStatus(rs.getString("st_cliente"));
             }
             return cliente;
         } catch (SQLException e) {
@@ -174,5 +175,60 @@ public class ClienteDAO {
         }  
     }
     
+    public void update(Cliente cliente) {
+        com.mysql.jdbc.Connection con = null;
+        PreparedStatement stmt = null;
+        try {
+
+            con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
+            stmt = con.prepareStatement(stmtUpdate);
+            stmt.setString(1, cliente.getNome());
+            stmt.setString(2, cliente.getRg());
+            stmt.setString(3, cliente.getCpf());
+            stmt.setString(4, cliente.getStatus());
+            stmt.setInt(5, cliente.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
+            };
+            try {
+                con.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
+            };
+        }
+    }    
+    
+    public void exclui(Cliente cliente) {
+        com.mysql.jdbc.Connection con = null;
+        PreparedStatement stmt = null;
+        try {
+
+            con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
+            stmt = con.prepareStatement(stmtDelete);
+            stmt.setInt(1, cliente.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
+            };
+            try {
+                con.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
+            };
+        }
+    }
     
 }
