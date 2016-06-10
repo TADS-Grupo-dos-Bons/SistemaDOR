@@ -144,7 +144,7 @@
                     type: "post",
                     url: "ProcessaEditaCliente", //this is my servlet
                     data: "nome=" + $("#nome2").val() + "&rg=" + $('#rg2').val() +
-                            "&cpf=" + $('#cpf2').val() + "&status=" + $('#status2').val() +
+                            "&cpf=" + $('#cpf2').val() + "&status=" + $('input[name=data]:checked').val() +
                             "&id=" + $("#invisivel2").val(),
                     success: function (msg) {
                         alert('Dados editados com sucesso.');

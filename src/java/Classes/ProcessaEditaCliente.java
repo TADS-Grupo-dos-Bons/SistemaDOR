@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -36,6 +37,10 @@ public class ProcessaEditaCliente extends HttpServlet {
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            
+            Usuario usuario = new Usuario();
+            HttpSession session = request.getSession();
+            usuario = (Usuario) session.getAttribute("Usuario");
 
             String nome = request.getParameter("nome");
             String rg = request.getParameter("rg");
@@ -53,8 +58,8 @@ public class ProcessaEditaCliente extends HttpServlet {
             Cliente cliente = new Cliente();
             HistoricoDAO historicoDAO = new HistoricoDAO();
             Historico historico = new Historico();
-            historico = historicoDAO.getById(request.getParameter("id"));
-            
+            historico = historicoDAO.getUltimoHistorico(request.getParameter("id"));
+
             try {
                 cliente = clienteDAO.getById(id);
                 cliente.setId(id);
@@ -66,15 +71,30 @@ public class ProcessaEditaCliente extends HttpServlet {
                 if (status.equals("I") && historico.getDtFim() == null) {
                     java.util.Date utilDate = new java.util.Date();
                     java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-                    historico.setDtFim(sqlDate);                    
+                    historico.setDtFim(sqlDate);
+                    historicoDAO.update(historico);
+                }
+
+                if (status.equals("A")) {
+                    java.util.Date utilDate = new java.util.Date();
+                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+                    Historico historicoNovo = new Historico();
+
+                    historicoNovo.setDtInicio(sqlDate);
+                    historicoNovo.setDtFim(null);
+                    historicoNovo.setId_cliente(cliente.getId());
+                    historicoNovo.setId_usuario(usuario.getId());
+                    historicoNovo.setId_empresa_usuario(usuario.getId_empresa());
+
+                    historicoDAO.insert(historicoNovo);
                 }
 
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ProcessaEditaCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            clienteDAO.update(cliente);
-            historicoDAO.update(historico);
+            clienteDAO.update(cliente);            
 
         }
     }

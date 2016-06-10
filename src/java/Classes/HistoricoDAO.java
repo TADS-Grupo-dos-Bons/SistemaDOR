@@ -17,8 +17,8 @@ import java.util.List;
 public class HistoricoDAO {
     private String stmtInsert = "insert into historico(dtInicio,dtFim,id_cliente,id_usuario,id_empresa_usuario) values(?,?,?,?,?);";
     private String stmtSelectListaById = "select * from historico where id_cliente=?";
-    private String stmtSelectById = "select from historico where id_cliente=? and dtFim is null";
-    private String stmtUpdate = "update historico set dtFim where id=?";
+    private String stmtSelectUltimoHistorico = "select * from historico where id_cliente=? and dtFim is null";
+    private String stmtUpdate = "update historico set dtFim=? where id=?";
     
     public List<Historico> getListaById(String id) throws SQLException {
         com.mysql.jdbc.Connection con = null;
@@ -98,14 +98,14 @@ public class HistoricoDAO {
         }
     }
     
-    public Historico getById(String id) throws SQLException {
+    public Historico getUltimoHistorico(String id) throws SQLException {
         com.mysql.jdbc.Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
-            stmt = con.prepareStatement(stmtSelectById, Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, id);
+            stmt = con.prepareStatement(stmtSelectUltimoHistorico, Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, Integer.parseInt(id));
             
             rs = stmt.executeQuery();
             Historico historico = new Historico();
@@ -149,6 +149,7 @@ public class HistoricoDAO {
             con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
             stmt = con.prepareStatement(stmtUpdate);
             stmt.setDate(1, (Date) historico.getDtFim());
+            stmt.setInt(2, historico.getId());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
