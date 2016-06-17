@@ -47,8 +47,8 @@ public class ProcessaEditaCliente extends HttpServlet {
             String cpf = request.getParameter("cpf");
             int id = Integer.parseInt((request.getParameter("id")));
             String status = null;
-
-            if (request.getParameter("status").equals("1")) {
+            String idStatus = request.getParameter("status");
+            if (idStatus.equals("1")) {
                 status = "A";
             } else {
                 status = "I";
@@ -58,7 +58,7 @@ public class ProcessaEditaCliente extends HttpServlet {
             Cliente cliente = new Cliente();
             HistoricoDAO historicoDAO = new HistoricoDAO();
             Historico historico = new Historico();
-            historico = historicoDAO.getUltimoHistorico(request.getParameter("id"));
+            historico = historicoDAO.getUltimoHistorico(Integer.parseInt(request.getParameter("id")));
 
             try {
                 cliente = clienteDAO.getById(id);

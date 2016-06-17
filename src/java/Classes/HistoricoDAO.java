@@ -98,14 +98,14 @@ public class HistoricoDAO {
         }
     }
     
-    public Historico getUltimoHistorico(String id) throws SQLException {
+    public Historico getUltimoHistorico(int id) throws SQLException {
         com.mysql.jdbc.Connection con = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
             stmt = con.prepareStatement(stmtSelectUltimoHistorico, Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1, Integer.parseInt(id));
+            stmt.setInt(1, id);
             
             rs = stmt.executeQuery();
             Historico historico = new Historico();
