@@ -26,6 +26,8 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "ProcessaCadCliente", urlPatterns = {"/ProcessaCadCliente"})
 public class ProcessaCadCliente extends HttpServlet {
 
+//    private String msg = null;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -54,30 +56,48 @@ public class ProcessaCadCliente extends HttpServlet {
             String cpf = request.getParameter("cpf");
             String status = "A";
             String empresa = request.getParameter("empresa");
-
+            String msg = "";
             Cliente cliente = new Cliente();
             ClienteDAO clienteDAO = new ClienteDAO();
+            try {
+                cliente = clienteDAO.verificaCpf(cpf);
+                
+                if(cliente.getId() != 0){
+                    msg = "CPF já cadastrado";
+ 
+                }else{
+                     
+                     
+                    cliente.setNome(nome);
+                    cliente.setRg(rg);
+                    cliente.setCpf(cpf);
+                    cliente.setStatus(status);
 
-            cliente.setNome(nome);
-            cliente.setRg(rg);
-            cliente.setCpf(cpf);
-            cliente.setStatus(status);
+                    clienteDAO.insert(cliente);
 
-            clienteDAO.insert(cliente);
+                    Historico historico = new Historico();
+                    HistoricoDAO historicoDAO = new HistoricoDAO();
 
-            Historico historico = new Historico();
-            HistoricoDAO historicoDAO = new HistoricoDAO();
+                    java.util.Date utilDate = new java.util.Date();
+                    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
 
-            java.util.Date utilDate = new java.util.Date();
-            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+                    historico.setDtInicio(sqlDate);
+                    historico.setDtFim(null);
+                    historico.setId_cliente(cliente.getId());
+                    historico.setId_usuario(usuario.getId());
+                    historico.setId_empresa_usuario(usuario.getId_empresa());
 
-            historico.setDtInicio(sqlDate);
-            historico.setDtFim(null);
-            historico.setId_cliente(cliente.getId());
-            historico.setId_usuario(usuario.getId());
-            historico.setId_empresa_usuario(usuario.getId_empresa());
-
-            historicoDAO.insert(historico);
+                    historicoDAO.insert(historico);
+                    
+                    msg = "Cliente cadastrado com sucesso.";
+                }
+               
+                out.print(msg);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ProcessaCadCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+  
 
         }
     }

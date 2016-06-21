@@ -38,3 +38,7 @@ CREATE TABLE historico(
 	FOREIGN KEY (id_usuario) REFERENCES usuario(id),
 	FOREIGN KEY (id_empresa_usuario) REFERENCES usuario(id_empresa)
 );
+
+
+ALTER TABLE usuario ADD st_usuario VARCHAR(1)
+

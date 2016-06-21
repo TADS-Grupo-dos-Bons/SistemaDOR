@@ -68,17 +68,22 @@
             }
             //Faz o insert do usuario;
             function cadastrarUsuario() {
-                $.ajax({
-                    type: "post",
-                    url: "ProcessaCadUsuario", //this is my servlet
-                    data: "",
-                    data: "nome=" + $("#nome").val() + "&user=" + $('#user').val() +
-                            "&senha=" + $('#senha').val() + "&empresa=" + $('#empresa').val(),
-                            success: function (msg) {
-                                alert('Usuário cadastrado com sucesso.');
-                                location.reload(true);
-                            }
-                });
+                
+                if($("#nome").val() != "" && $('#user').val() != "" && $('#senha').val() && $('#empresa').val()){
+                    $.ajax({
+                        type: "post",
+                        url: "ProcessaCadUsuario", //this is my servlet
+                        data: "",
+                        data: "nome=" + $("#nome").val() + "&user=" + $('#user').val() +
+                                "&senha=" + $('#senha').val() + "&empresa=" + $('#empresa').val(),
+                                success: function (msg) {
+                                    alert('Usuário cadastrado com sucesso.');
+                                    location.reload(true);
+                                }
+                    });
+                }else{
+                    alert("Todos os campos deve ser preenchidos");
+                }
             }
 
             //Funcao que joga os dados do usuario selecionado no modal.
@@ -89,6 +94,8 @@
                     data: "idUsuario=" + id,
                     success: function (data) {
                         var resp = data.split(",");
+                        
+                        alert(data);
                         $("#invisivel2").val(resp[0]);
                         $("#nome2").val(resp[1]);
                         $("#user2").val(resp[2]);
@@ -102,17 +109,22 @@
             }
 
             function editaUsuario() {
-                $.ajax({
-                    type: "post",
-                    url: "ProcessaEditaUsuario", //this is my servlet
-                    data: "nome=" + $("#nome2").val() + "&user=" + $('#user2').val() +
-                            "&senha=" + $('#senha2').val() + "&empresa=" + $("#empresa2").val() +
-                            "&id=" + $("#invisivel2").val(),
-                    success: function (msg) {
-                        alert('Dados editados com sucesso.');
-                        location.reload(true);
-                    }
-                });
+                
+                if($("#nome2").val() != "" && $('#user2').val() != "" && $('#senha2').val() && $('#empresa2').val()){
+                    $.ajax({
+                        type: "post",
+                        url: "ProcessaEditaUsuario", //this is my servlet
+                        data: "nome=" + $("#nome2").val() + "&user=" + $('#user2').val() +
+                                "&senha=" + $('#senha2').val() + "&empresa=" + $("#empresa2").val() +
+                                "&id=" + $("#invisivel2").val(),
+                        success: function (msg) {
+                            alert('Dados editados com sucesso.');
+                            location.reload(true);
+                        }
+                    });
+                }else{
+                    alert("Todos os campos deve ser preenchidos");
+                }
             }
 
             //Funcao que trata a operação a ser feita (insert/update).
@@ -127,15 +139,21 @@
             //Funcao que exclui o usuario
 
             function excluir(id) {
-                $.ajax({
-                    type: "post",
-                    url: "ProcessaExcluiUsuario", //this is my servlet
-                    data: "id=" + id,
-                    success: function (msg) {
-                        alert('Usuario excluido com sucesso.');
-                        location.reload(true);
-                    }
-                });
+                
+                if(id != 1){
+                    $.ajax({
+                        type: "post",
+                        url: "ProcessaExcluiUsuario", //this is my servlet
+                        data: "id=" + id,
+                        success: function (msg) {
+                            alert('Usuario excluido com sucesso.');
+                            location.reload(true);
+                        }
+                    });
+                }else{
+                    alert("O administrador nao pode ser excluido.");
+                    
+                }
             }
 
             //Função que pesquisa usuário por nome.

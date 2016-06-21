@@ -15,6 +15,7 @@ public class Usuario {
     private String usuario;
     private String senha;
     private int id_empresa;
+    private String st_usuario;
 
     public int getId() {
         return id;
@@ -54,6 +55,14 @@ public class Usuario {
 
     public void setId_empresa(int id_empresa) {
         this.id_empresa = id_empresa;
+    }
+
+    public String getSt_usuario() {
+        return st_usuario;
+    }
+
+    public void setSt_usuario(String st_usuario) {
+        this.st_usuario = st_usuario;
     }
     
 }

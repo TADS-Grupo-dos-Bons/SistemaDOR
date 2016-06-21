@@ -16,6 +16,7 @@
         <link type="text/css" rel="stylesheet" href="css/bootstrap-switch.css">
         <script src="js/jquery-2.2.1.js"></script>
         <script src="js/bootstrap.js"></script>
+        <script src="js/jquery.mask.js"></script>
         <script src="js/bootstrap-switch.js"></script>
         <script type="text/javascript">
             function mostramodal() {
@@ -28,9 +29,18 @@
                 $('#myModal3').modal('show');
             }
 
+
+
+                
+
+
             $(document).ready(function () {
                 getLista();
                 getListaRelatorio(4);
+                
+                
+                $(".cpfmask").mask("999.999.999-99");
+                $(".txtRg").mask("9.999.999-9");
 
                 $(".cadcliente").addClass('active');
 
@@ -81,17 +91,28 @@
             }
             //Faz o insert do cliente;
             function cadastrarCliente() {
-                $.ajax({
-                    type: "post",
-                    url: "ProcessaCadCliente", //this is my servlet
-                    data: "",
-                    data: "nome=" + $("#nome").val() + "&rg=" + $("#rg").val() +
-                            "&cpf=" + $("#cpf").val() + "&empresa=" + $("#empresa").val(),
-                            success: function (msg) {
-                                alert('Cliente cadastrado com sucesso.');
-                                location.reload(true);
-                            }
-                });
+                
+                
+                if($("#nome").val() != "" && $("#rg").val() != "" && $("#cpf").val()){
+                    if(validarCPF($("#cpf").val())){
+                        $.ajax({
+                            type: "post",
+                            url: "ProcessaCadCliente", //this is my servlet
+                            data: "",
+                            data: "nome=" + $("#nome").val() + "&rg=" + $("#rg").val() +
+                                    "&cpf=" + $("#cpf").val() + "&empresa=" + $("#empresa").val(),
+                                    success: function (msg) {
+                                        alert(msg);
+                                        location.reload(true);
+                                    }
+                        });
+                    }else{
+                        alert('CPF inválido.')
+                    }
+                }else{
+                    alert("Todos os campos deve ser preenchidos");
+                    
+                }
             }
 
             //Funcao que joga os dados do cliente selecionado no modal.
@@ -144,17 +165,24 @@
             }
 
             function editaCliente() {
-                $.ajax({
-                    type: "post",
-                    url: "ProcessaEditaCliente", //this is my servlet
-                    data: "nome=" + $("#nome2").val() + "&rg=" + $('#rg2').val() +
-                            "&cpf=" + $('#cpf2').val() + "&status=" + $('input[name=data]:checked').val() +
-                            "&id=" + $("#invisivel2").val(),
-                    success: function (msg) {
-                        alert('Dados editados com sucesso.');
-                        location.reload(true);
-                    }
-                });
+                
+                
+                if($("#nome2").val() != "" && $("#rg2").val() != "" && $("#cpf2").val()){
+                    $.ajax({
+                        type: "post",
+                        url: "ProcessaEditaCliente", //this is my servlet
+                        data: "nome=" + $("#nome2").val() + "&rg=" + $('#rg2').val() +
+                                "&cpf=" + $('#cpf2').val() + "&status=" + $('input[name=data]:checked').val() +
+                                "&id=" + $("#invisivel2").val(),
+                        success: function (msg) {
+                            alert(msg);
+                            location.reload(true);
+                        }
+                    });
+                }else{
+                    alert("Todos os campos deve ser preenchidos");
+                    
+                }
             }
 
             //Funcao que trata a operação a ser feita (insert/update).
@@ -192,6 +220,43 @@
                 });
 
             }
+            
+            function validarCPF(cpf) {  
+            cpf = cpf.replace(/[^\d]+/g,'');    
+            if(cpf == '') return false; 
+            // Elimina CPFs invalidos conhecidos    
+            if (cpf.length != 11 || 
+                cpf == "00000000000" || 
+                cpf == "11111111111" || 
+                cpf == "22222222222" || 
+                cpf == "33333333333" || 
+                cpf == "44444444444" || 
+                cpf == "55555555555" || 
+                cpf == "66666666666" || 
+                cpf == "77777777777" || 
+                cpf == "88888888888" || 
+                cpf == "99999999999")
+                    return false;       
+            // Valida 1o digito 
+            add = 0;    
+            for (i=0; i < 9; i ++)       
+                add += parseInt(cpf.charAt(i)) * (10 - i);  
+                rev = 11 - (add % 11);  
+                if (rev == 10 || rev == 11)     
+                    rev = 0;    
+                if (rev != parseInt(cpf.charAt(9)))     
+                    return false;       
+            // Valida 2o digito 
+            add = 0;    
+            for (i = 0; i < 10; i ++)        
+                add += parseInt(cpf.charAt(i)) * (11 - i);  
+            rev = 11 - (add % 11);  
+            if (rev == 10 || rev == 11) 
+                rev = 0;    
+            if (rev != parseInt(cpf.charAt(10)))
+                return false;       
+            return true;   
+        }
 
 
         </script>
@@ -266,25 +331,17 @@
                         <br>
                         <div class="cel1">
                             <label for="cod_analise">Nome</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                            <input id="nome" class="nome" type="text" name="data"/>
+                            <input id="nome" class="nome" type="text" name="data" />
                         </div><br>
                         <div class="cel1">
                             <label for="cod_analise">RG</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input id="rg" class="rg" type="text" name="data"/>
+                            <input id="rg" class="rg txtRg" type="text" pattern="[0-9]+$" name="data"/>
                         </div><br>
                         <div class="cel1">
                             <label for="cod_analise">CPF</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input id="cpf" class="cpf" type="text" name="data"/>
+                            <input id="cpf" class="cpf cpfmask" type="text1" pattern="[0-9]+$" name="data"/>
                         </div><br>
-                        <div class="cel1">
-                            <label for="cod_analise">Empresa</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <select id="empresa" class="empresa" name="data">
-                                <option value="">Selecione</option>
-                                <option value="bancoCoban">Banco Coban</option>
-                                <option value="financeiraFina">Financeira Fina</option>
-                                <option value="agiotaIgiota">Agiota Igiota</option>
-                            </select>
-                        </div><br>                        
+                                           
                     </div>
                 </div>
 
@@ -319,11 +376,11 @@
                         </div><br>
                         <div class="cel1">
                             <label for="cod_analise">RG</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input id="rg2" class="rg" type="text" name="data"/>
+                            <input id="rg2" class="rg txtRg" type="text" pattern="[0-9]+$" name="data"/>
                         </div><br>
                         <div class="cel1">
                             <label for="cod_analise">CPF</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input id="cpf2" class="cpf" type="text" name="data"/>
+                            <input id="cpf2" class="cpf cpfmask" type="text" pattern="[0-9]+$"  name="data"/>
                         </div><br>                        
                         <div id="status2" class="cel1" name="data">
                             <label for="cod_analise">Status</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -343,81 +400,9 @@
     </div>
 </div>
 
-<!-- Modal Relatório -->
-
-<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Relatório</h4>
-            </div>
-            <div class="modal-body">
-
-
-                <div class='row'>
-
-                    <div class='col-md-8 col-md-offset-3'>
-                        <br>                    
-                        <div class="cel1">
-                            <label for="cod_analise">Nome</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input id="nome3" class="nome" type="text" name="data"/>
-                        </div><br>
-
-                        <div class="cel1">
-                            <label for="cod_analise">RG</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input id="rg3" class="rg" type="text" name="data"/>
-                        </div><br>
-
-                        <div class="cel1">
-                            <label for="cod_analise">CPF</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input id="cpf3" class="cpf" type="text" name="data"/>
-                        </div><br>
-
-                        <div class="cel1">
-                            <label for="cod_analise">Status Atual</label>&nbsp;&nbsp;&nbsp;
-                            <input id="status3" class="status" type="text" name="data"/>
-                        </div><br>
-                    </div>    
-                    <div class='col-md-12'>
-                        <u>Histórico</u><br><br>
-
-
-                        <table class="table table-bordered table-striped" aria-describedby="dataTable1_info">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Número
-                                    </th>                        
-                                    <th>
-                                        Data-Ativo  
-                                    </th>
-                                    <th>
-                                        Data-Inativo 
-                                    </th>
-                                    <th>
-                                        Empresa
-                                    </th>
-
-                                </tr>                 
-                            </thead>
-
-                            <tbody class="lvUsuarioTbody" role="alert" aria-live="polite" aria-relevant="all" id="tbListaRelatorio">
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" onclick='#' class="btn btn-primary">Imprimir</button>
-                <input type="text" style="display:None;" id="invisivel3">
-            </div>
-        </div>
-    </div>
-</div>
-
 </html>
+
+
+
+
+

@@ -31,8 +31,47 @@ public class ClienteDAO {
     private String stmtUpdate = "update cliente set nome=?, rg=?, cpf=?, st_cliente=? where id=?";
     private String stmtDelete = "delete from cliente where id = ?";
     private String stmtSelectByCpf = "select * from cliente where cpf = ?";
+    private String stmtCheckCpf = "select * from cliente where cpf=?;";
+
     
-    
+    public Cliente verificaCpf(String cpf) throws ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Cliente cliente = new Cliente();
+        com.mysql.jdbc.Connection con = null;
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+        try {
+            con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
+
+            stmt = con.prepareStatement(stmtCheckCpf, Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, cpf);
+            
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setRg(rs.getString("rg"));
+                cliente.setCpf(rs.getString("cpf"));
+
+            }
+
+            return cliente;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
+            };
+            try {
+                con.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
+            };
+        }
+    }
 
     public List<Cliente> getLista(String pesquisa) throws SQLException {
         com.mysql.jdbc.Connection con = null;

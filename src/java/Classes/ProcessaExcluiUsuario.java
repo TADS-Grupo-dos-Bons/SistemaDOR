@@ -40,18 +40,18 @@ public class ProcessaExcluiUsuario extends HttpServlet {
             
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             Usuario usuario = new Usuario();
+            String st_usuario = "I";
             
             try {
                 usuario = usuarioDAO.getById(id);
                 usuario.setId(id);
-               
+                usuario.setSt_usuario(st_usuario);
                 
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ProcessaEditaUsuario.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            usuarioDAO.exclui(usuario);
-
+            usuarioDAO.updateExcluir(usuario);
 
         }
     }

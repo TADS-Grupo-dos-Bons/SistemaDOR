@@ -21,12 +21,13 @@ import java.util.List;
 public class UsuarioDAO {
 
     private String stmtUpdate = "update usuario set nome=?, usuario=?, senha=?, id_empresa=? where id=?";
-    private String stmtSelect = "select * from usuario";
-    private String stmtInsert = "insert into usuario (nome,usuario,senha,id_empresa) values(?,?,?,?);";
+    private String stmtSelect = "select * from usuario where st_usuario = 'A'";
+    private String stmtInsert = "insert into usuario (nome,usuario,senha,id_empresa,st_usuario) values(?,?,?,?,?);";
     private String stmtCheckLogin = "select * from usuario where usuario =? and senha=?;";
     private String stmtSelectById = "select * from usuario where id =?";
     private String stmtDelete = "delete from usuario where id = ?";
-
+    private String stmtUpdateExcluir = "update usuario set st_usuario = ? where id=?";
+    
     public List<Usuario> getLista(Usuario user, String pesquisa) throws SQLException {
         com.mysql.jdbc.Connection con = null;
         PreparedStatement stmt = null;
@@ -35,7 +36,7 @@ public class UsuarioDAO {
             con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
             if (!pesquisa.trim().equals("")) {
 
-                stmtSelect = stmtSelect + " where nome LIKE ?";
+                stmtSelect = stmtSelect + "AND where nome LIKE ? ";
                 stmt = con.prepareStatement(stmtSelect);
                 stmt.setString(1, "%"+pesquisa+"%");
 
@@ -109,6 +110,34 @@ public class UsuarioDAO {
             };
         }
     }
+    
+    
+        public void updateExcluir(Usuario user) {
+        com.mysql.jdbc.Connection con = null;
+        PreparedStatement stmt = null;
+        try {
+
+            con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
+            stmt = con.prepareStatement(stmtUpdateExcluir);
+            stmt.setString(1, user.getSt_usuario());
+            stmt.setInt(2, user.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar stmt. Ex=" + ex.getMessage());
+            };
+            try {
+                con.close();
+            } catch (Exception ex) {
+                System.out.println("Erro ao fechar conexão. Ex=" + ex.getMessage());
+            };
+        }
+    }
 
     public void exclui(Usuario user) {
         com.mysql.jdbc.Connection con = null;
@@ -148,6 +177,7 @@ public class UsuarioDAO {
             stmt.setString(2, usuario.getUsuario());
             stmt.setString(3, usuario.getSenha());
             stmt.setInt(4, usuario.getId_empresa());
+            stmt.setString(5,usuario.getSt_usuario());
             stmt.execute();
             //Seta o id do sistema
             ResultSet rs = stmt.getGeneratedKeys();
