@@ -24,7 +24,7 @@ public class ConnectionFactory {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ConnectionFactory.class.getName()).log(Level.SEVERE, null, ex);
             }
-            return DriverManager.getConnection("jdbc:mysql://localhost/DOR", "root", "");
+            return DriverManager.getConnection("jdbc:mysql://localhost/dor", "root", "");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

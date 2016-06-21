@@ -125,15 +125,19 @@
                     url: "Relatorio", //this is my servlet
                     data: "idCliente=" + id,
                     success: function (data) {
-                        var resp = data.split(",");
-                        $("#invisivel3").val(resp[0]);
-                        $("#nome3").val(resp[1]);
-                        $("#rg3").val(resp[2]);
-                        $("#cpf3").val(resp[3]);
-                        $("#status3").val(resp[4]);
-
-                        mostramodal1();
-                        getListaRelatorio(id);
+                        
+                        alert(data);
+                        
+                        
+//                        var resp = data.split(",");
+//                        $("#invisivel3").val(resp[0]);
+//                        $("#nome3").val(resp[1]);
+//                        $("#rg3").val(resp[2]);
+//                        $("#cpf3").val(resp[3]);
+//                        $("#status3").val(resp[4]);
+//
+////                        mostramodal1();
+//                        getListaRelatorio(id);
 
                     }
                 });
@@ -261,15 +265,15 @@
                     <div class='col-md-8 col-md-offset-3'>
                         <br>
                         <div class="cel1">
-                            <label for="cod_analise">Nome</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="cod_analise">Nome</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                             <input id="nome" class="nome" type="text" name="data"/>
                         </div><br>
                         <div class="cel1">
-                            <label for="cod_analise">RG</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="cod_analise">RG</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <input id="rg" class="rg" type="text" name="data"/>
                         </div><br>
                         <div class="cel1">
-                            <label for="cod_analise">CPF</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="cod_analise">CPF</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <input id="cpf" class="cpf" type="text" name="data"/>
                         </div><br>
                         <div class="cel1">
@@ -310,15 +314,15 @@
                     <div class='col-md-8 col-md-offset-3'>
                         <br>
                         <div class="cel1">
-                            <label for="cod_analise">Nome</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="cod_analise">Nome</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                             <input id="nome2" class="nome" type="text" name="data"/>
                         </div><br>
                         <div class="cel1">
-                            <label for="cod_analise">RG</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="cod_analise">RG</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <input id="rg2" class="rg" type="text" name="data"/>
                         </div><br>
                         <div class="cel1">
-                            <label for="cod_analise">CPF</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label for="cod_analise">CPF</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <input id="cpf2" class="cpf" type="text" name="data"/>
                         </div><br>                        
                         <div id="status2" class="cel1" name="data">

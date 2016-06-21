@@ -46,7 +46,7 @@ public class ProcessaEditaCliente extends HttpServlet {
             String rg = request.getParameter("rg");
             String cpf = request.getParameter("cpf");
             int id = Integer.parseInt((request.getParameter("id")));
-            String status = null;
+            String status = null;        
             String idStatus = request.getParameter("status");
             if (idStatus.equals("1")) {
                 status = "A";

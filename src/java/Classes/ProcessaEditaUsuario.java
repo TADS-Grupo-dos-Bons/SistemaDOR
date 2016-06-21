@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -35,6 +36,12 @@ public class ProcessaEditaUsuario extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+            
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            Usuario usuario = new Usuario();
+            
+            HttpSession session = request.getSession();
+            usuario = (Usuario) session.getAttribute("Usuario");
 
             String nome = request.getParameter("nome");
             String user = request.getParameter("user");
@@ -42,8 +49,7 @@ public class ProcessaEditaUsuario extends HttpServlet {
             int id = Integer.parseInt((request.getParameter("id")));
             int empresa = Integer.parseInt((request.getParameter("empresa")));
             
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
-            Usuario usuario = new Usuario();
+            
             
             try {
                 usuario = usuarioDAO.getById(id);

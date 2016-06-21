@@ -69,7 +69,7 @@ public class ListaCliente extends HttpServlet {
                         + "				<td>" + cli.getRg() + "</td>\n"
                         + "				<td>" + cli.getCpf() + "</td>\n"
                         + "				<td>" + cli.getStatus() + "</td>\n"
-                        + "                               <td><button type=\"button\" class=\"btn btn-warning \" onclick=\"carregaRelatorio(" + cli.getId() + ");\">Relatório</button>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-success\" onclick=\"carregaeditaCliente(" + cli.getId() + ")\">Editar</button></td>\n"
+                        + "                               <td><a href=\"Relatorio?id="+ cli.getId() +"\"><button type=\"button\" class=\"btn btn-warning \" \">Relatório</button></a>&nbsp;&nbsp;&nbsp;<button type=\"button\" class=\"btn btn-success\" onclick=\"carregaeditaCliente(" + cli.getId() + ")\">Editar</button></td>\n"
                         + "			</tr>";
             }
 

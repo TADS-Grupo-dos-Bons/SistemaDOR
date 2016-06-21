@@ -31,6 +31,8 @@ public class ClienteDAO {
     private String stmtUpdate = "update cliente set nome=?, rg=?, cpf=?, st_cliente=? where id=?";
     private String stmtDelete = "delete from cliente where id = ?";
     private String stmtSelectByCpf = "select * from cliente where cpf = ?";
+    
+    
 
     public List<Cliente> getLista(String pesquisa) throws SQLException {
         com.mysql.jdbc.Connection con = null;
@@ -359,6 +361,7 @@ public class ClienteDAO {
         }
 
     }
+    
 
     public void inativarWS(Cliente cliente) {
         com.mysql.jdbc.Connection con = null;
