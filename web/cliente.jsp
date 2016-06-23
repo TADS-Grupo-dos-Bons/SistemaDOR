@@ -175,7 +175,7 @@
                                 "&cpf=" + $('#cpf2').val() + "&status=" + $('input[name=data]:checked').val() +
                                 "&id=" + $("#invisivel2").val(),
                         success: function (msg) {
-                            alert(msg);
+                            alert("Dados Editados com sucesso!");
                             location.reload(true);
                         }
                     });

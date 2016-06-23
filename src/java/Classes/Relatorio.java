@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,74 +55,207 @@ public class Relatorio extends HttpServlet {
         
             int id = Integer.parseInt((request.getParameter("id")));
 
-            Cliente cliente = new Cliente();
-            ClienteDAO clienteDAO = new ClienteDAO();
-            Historico historico = new Historico();
-            HistoricoDAO historicoDAO = new HistoricoDAO();
-            List<Historico> lsthistorico = new ArrayList();
+//            Cliente cliente = new Cliente();
+//            ClienteDAO clienteDAO = new ClienteDAO();
+//            Historico historico = new Historico();
+//            HistoricoDAO historicoDAO = new HistoricoDAO();
+//            List<Historico> lsthistorico = new ArrayList();
+            
+            
+            Connection con = null;
 
             try {
-                // Conexão com o banco
-                com.mysql.jdbc.Connection con = null;
-                PreparedStatement stmt = null;
-
-                String query = "select nome from cliente ;";
-                ResultSet rs = null;
-                try {
-                    con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
-                    stmt = con.prepareStatement(query);
-                    rs = stmt.executeQuery(query);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Relatorio.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                JRResultSetDataSource jrRS = new JRResultSetDataSource(rs);
-
-                Map parametros = new HashMap();
-
-                cliente = clienteDAO.getById(id);
-//                String nome = cliente.getNome();
-//                String rg = cliente.getRg();
-//                String cpf = cliente.getCpf();
-//                String status = cliente.getStatus();
-//                
-                parametros.put("id", id);
-//                parametros.put("rg", rg);
-//                parametros.put("cpf", cpf);
-//                parametros.put("status", status);
-
-                try {
-//                    String jasperPrint = JasperFillManager.fillReportToFile("/relatorio_dor.jasper", parametros, jrRS);//Aqui vc chama o relatório
-                    String jasper = request.getContextPath() + "/relatorioDOR.jasper";
-
-                    // Host onde o servlet esta executando
-                    String host = "http://" + request.getServerName() + ":" + request.getServerPort();
-
-                    // URL para acesso ao relatório
-                    URL jasperURL = new URL(host + jasper);
-
-                    byte[] bytes = JasperRunManager.runReportToPdf(jasperURL.openStream(), parametros, con);
-
-                    if (bytes != null) {
-
-                        // A página será mostrada em PDF
-                        response.setContentType("application/pdf");
-
-                        // Envia o PDF para o Cliente
-                        OutputStream ops = response.getOutputStream();
-
-                        ops.write(bytes);
-
-                    }
-                    
                 
-                } catch (JRException ex) {
-                    Logger.getLogger(Relatorio.class.getName()).log(Level.SEVERE, null, ex);
+                Cliente cliente = new Cliente();
+                ClienteDAO clienteDAO = new ClienteDAO();
+                           
+                // Conexão com o banco
+                Class.forName("com.mysql.jdbc.Driver");
+
+                con = DriverManager.getConnection("jdbc:mysql://localhost/dor", "root", "");
+                // Caminho contextualizado do relatório compilado
+
+                String jasper = request.getContextPath() + "/dor.jasper";
+
+                // Host onde o servlet esta executando
+                String host = "http://" + request.getServerName() + ":" + request.getServerPort();
+
+                // URL para acesso ao relatório
+                URL jasperURL = new URL(host + jasper);
+
+                // Parâmetros do relatório
+                HashMap params = new HashMap();
+                
+                cliente = clienteDAO.getById(id);
+                
+                String stCliente = "";
+                
+                if(cliente.getStatus().equals("A")){
+                    stCliente = "ATIVO";
+                }else{
+                    stCliente = "INATIVO";
+                }
+                
+                
+         
+                params.put("id", id);
+                params.put("idClienteStatus",stCliente);
+
+                // Geração do relatório
+                byte[] bytes = JasperRunManager.runReportToPdf(jasperURL.openStream(), params, con);
+                if (bytes != null) {
+
+                    // A página será mostrada em PDF
+                    response.setContentType("application/pdf");
+
+                    // Envia o PDF para o Cliente
+                    OutputStream ops = response.getOutputStream();
+
+                    ops.write(bytes);
+
                 }
 
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(EditaCliente.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException e) {
+
+                request.setAttribute("mensagem", "Driver BD não encontrado : " + e.getMessage());
+
+                request.getRequestDispatcher("erro.jsp").forward(request, response);
+
+            } catch (SQLException e) {
+
+                request.setAttribute("mensagem", "Erro de conexão ou query: " + e.getMessage());
+
+                request.getRequestDispatcher("erro.jsp").forward(request, response);
+
+            } catch (JRException e) {
+                String teste = e.getMessage();
+                String bla = "bla";
+                request.setAttribute("mensagem", "Erro no Jasper : " + e.getMessage());
+
+                request.getRequestDispatcher("erro.jsp").forward(request, response);
+
+            } finally {
+
+                if (con != null) {
+                    try {
+                        con.close();
+                    } catch (Exception e) {
+                    }
+                }
+
             }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+
+//            try {
+//                // Conexão com o banco
+//                com.mysql.jdbc.Connection con = null;
+//                PreparedStatement stmt = null;
+//
+//                String query = "select nome from cliente;";
+//                ResultSet rs = null;
+//                
+//                try {
+//                    con = (com.mysql.jdbc.Connection) ConnectionFactory.getConnection();
+//                    stmt = con.prepareStatement(query);
+//                    rs = stmt.executeQuery(query);
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(Relatorio.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//                JRResultSetDataSource jrRS = new JRResultSetDataSource(rs);
+//
+//                Map parametros = new HashMap();
+//
+//                cliente = clienteDAO.getById(id);
+//                String nome = cliente.getNome();
+////                String rg = cliente.getRg();
+////                String cpf = cliente.getCpf();
+////                String status = cliente.getStatus();
+////                
+//                parametros.put("nome", nome);
+////                parametros.put("rg", rg);
+////                parametros.put("cpf", cpf);
+////                parametros.put("status", status);
+//
+//                try {
+////                    String jasperPrint = JasperFillManager.fillReportToFile("/relatorio_dor.jasper", parametros, jrRS);//Aqui vc chama o relatório
+//                    String jasper = request.getContextPath() + "/relatorioDOR.jasper";
+//
+//                    // Host onde o servlet esta executando
+//                    String host = "http://" + request.getServerName() + ":" + request.getServerPort();
+//
+//                    // URL para acesso ao relatório
+//                    URL jasperURL = new URL(host + jasper);
+//
+//                    byte[] bytes = JasperRunManager.runReportToPdf(jasperURL.openStream(), parametros, jrRS);
+//
+//                    if (bytes != null) {
+//
+//                        // A página será mostrada em PDF
+//                        response.setContentType("application/pdf");
+//
+//                        // Envia o PDF para o Cliente
+//                        OutputStream ops = response.getOutputStream();
+//
+//                        ops.write(bytes);
+//
+//                    }
+//                    
+//                
+//                } catch (JRException ex) {
+//                    Logger.getLogger(Relatorio.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//
+//            } catch (ClassNotFoundException ex) {
+//                Logger.getLogger(EditaCliente.class.getName()).log(Level.SEVERE, null, ex);
+//            }
         
     }
 
